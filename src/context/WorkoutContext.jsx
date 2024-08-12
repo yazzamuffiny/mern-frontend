@@ -13,6 +13,23 @@ export const workoutsReducer = (state, action) => {
                 //creates an array with the new workout at the front and previous workouts after
                 workouts: [action.payload, ...state.workouts]
             }
+        case 'DELETE_WORKOUTS':
+            return {
+                workouts: state.workouts.filter((workout) => workout._id !== action.payload._id)
+            }
+        case 'UPDATE_WORKOUT': {
+            const updatedWorkout = action.payload;
+            const updatedWorkouts = state.workouts.map(workout => {
+                if(workout._id === updatedWorkout._id) {
+                    return updatedWorkout;
+                }
+                return workout
+            });
+            return {
+                workouts: updatedWorkouts,
+            }
+        }
+
         default:
             return state //return state unchanged
     }

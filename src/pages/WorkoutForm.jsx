@@ -2,6 +2,8 @@ import { useState } from 'react'
 import axios from 'axios';
 import { useWorkoutContext } from '../hooks/useWorkoutsContext';
 
+const baseURL = import.meta.env.VITE_API_BASE_URL
+
 const WorkoutForm = () => {
 
     //dispatch for useContext
@@ -20,7 +22,7 @@ const WorkoutForm = () => {
         const workout = {title, load, reps}
 
         try {
-            const response = await axios.post('http://localhost:4000/api/workouts/', workout,{
+            const response = await axios.post(`${baseURL}/api/workouts/`, workout,{
                 headers: {
                     'Content-Type': 'application/json'
                 }

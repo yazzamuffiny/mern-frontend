@@ -5,13 +5,15 @@ import { useWorkoutContext } from '../hooks/useWorkoutsContext';
 import WorkoutDetails from './WorkoutDetails';
 import WorkoutForm from './WorkoutForm';
 
+const baseURL = import.meta.env.VITE_API_BASE_URL
+
 const Home = () => {
     const { workouts, dispatch} = useWorkoutContext()
     
 
     useEffect(() => {
         const fetchWorkouts = async () => {
-            const response = await axios.get('http://localhost:4000/api/workouts/')
+            const response = await axios.get(`${baseURL}/api/workouts/`)
             
             if (response.status === 200) {
                 dispatch({type: 'SET_WORKOUTS', payload: response.data})
