@@ -1,11 +1,14 @@
 import { useState } from 'react'
 import axios from 'axios'
 
+import { useNavigate } from 'react-router-dom';
+
 //icons
 import { MdDeleteForever } from "react-icons/md";
 import { FaRegEdit } from "react-icons/fa";
 
 import { useWorkoutContext } from '../hooks/useWorkoutsContext'
+
 
 import formatDistanceToNow from 'date-fns/formatDistanceToNow'
 
@@ -20,8 +23,20 @@ const WorkoutDetails = ({workout}) => {
   const [editLoad, setEditLoad] = useState(workout.load)
   const [editReps, setEditReps] = useState(workout.reps)
 
+  const [commentText, setCommentText] = useState('')
+  const [showComments, setShowComments] = useState(false)
+
   const {dispatch} = useWorkoutContext()
+  const navigate = useNavigate()
+
+  const user = JSON.parse(localStorage.getItem('user'))
   
+//handle navigate
+  const handleNavigate = () => {
+    let path= `/${workout._id}`
+    navigate(path)
+  }
+
 //handle delete
   const handleDelete = async () => {
     
@@ -64,6 +79,13 @@ const WorkoutDetails = ({workout}) => {
     }
   };
 
+  //split email function
+  const getEmailCharactersBeforeAtSymbol = (email) => {
+    const delimiter = '@';
+    const parts = email.split(delimiter);
+    return parts.length > 1 ? parts[0] : '';
+  };
+
   const handleCancelEdit = () => {
     setEditTitle(workout.title);
     setEditLoad(workout.load);
@@ -71,6 +93,29 @@ const WorkoutDetails = ({workout}) => {
     setIsEditing(false);
   };
 
+    const handleAddComment = async () => {
+      try {
+        const response = await axios.post(
+          `${baseURL}/api/comments/workouts/${workout._id}/comments`,
+          {
+              text: commentText,
+              user_id: user.email,
+          }
+        );
+
+        if (response.status === 201) {
+          const newComment = response.data;
+          const updatedComments = [...workout.comments, newComment];
+          const updatedWorkout = { ...workout, comments: updatedComments};
+
+          dispatch({type: 'UPDATE_WORKOUT', payload: updatedWorkout})
+
+          setCommentText('')
+        }
+      }catch (error) {
+        console.error('Error Adding Comment', error)
+      }
+    }
 
 
   return (
@@ -124,8 +169,48 @@ const WorkoutDetails = ({workout}) => {
             })}{' '}
             ago
           </p>
+          <p><strong>Created by: </strong>{workout.user_id}</p>
           <FaRegEdit className="edit" onClick={handleEdit}/>
           <MdDeleteForever className="delete" onClick={handleDelete}/>
+
+          <button onClick={handleNavigate}>Read More</button>
+
+          <button onClick={() => {
+            setShowComments(!showComments)
+            console.log(workout.comments[0])}}>
+              {showComments ? 'Hide Comments' : 'Show Comments'}
+          </button>
+
+            {showComments && (
+              <>
+                <div className='comments'>
+                  {/* map over comments array */}
+                  {workout.comments.map((comment) => (
+                    <div key={comment._id} className='comment'>
+                      <h5>{getEmailCharactersBeforeAtSymbol(comment.user_id)}</h5>
+                      <p>{comment.text}</p>
+                      <span>Posted: {formatDistanceToNow(new Date(comment.createdAt), {
+                      includeSeconds: true,
+                      })}{' '}
+                      ago</span>
+                    </div>
+                  ))}
+                </div>
+                {/* add comment section */}
+                <div className="add-comment">
+                  <label htmlFor="comment">Add New Comment</label>
+                  <input 
+                  type="text"
+                  placeholder='Add a comment...' 
+                  value={commentText}
+                  onChange={(e) => setCommentText(e.target.value)}
+                  />
+                  <button onClick={handleAddComment}>Submit</button>
+                </div>
+              </>
+
+            )}
+
         </>
       )} 
 			{/* END OF THE IF */}

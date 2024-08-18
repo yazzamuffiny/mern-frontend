@@ -4,17 +4,17 @@ import { useAuthContext } from "./useAuthContext";
 
 const baseURL = import.meta.env.VITE_API_BASE_URL
 
-export const useSignup = () => {
+export const useLogin = () => {
     const [error, setError] = useState(null)
     const [isLoading, setIsLoading] = useState(null)
     const {dispatch} = useAuthContext()
 
-    const signup = async (email, password) => {
+    const login = async (email, password) => {
         setIsLoading(true)
         setError(null)
 
         try {
-            const response = await axios.post(`${baseURL}/api/user/signup`,
+            const response = await axios.post(`${baseURL}/api/user/login`,
                 { email, password },
                 { headers: { 'Content-Type': 'application/json' } }
             );
@@ -33,13 +33,12 @@ export const useSignup = () => {
                 setIsLoading(false)
             }
             console.log(response);
-            
         } catch (error) {
             console.error(error.response.data.error)
             setError(error.response.data.error)
             setIsLoading(false)
         }
     }
-    return {signup, isLoading, error}
+    return {login, isLoading, error}
 }
 

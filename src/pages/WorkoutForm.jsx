@@ -19,7 +19,11 @@ const WorkoutForm = () => {
     const handleSubmit = async (e) => {
         e.preventDefault()
 
-        const workout = {title, load, reps}
+        //get user then set user_id = email
+        const user = JSON.parse(localStorage.getItem('user'))
+        const user_id = user.email
+
+        const workout = {title, load, reps, user_id}
 
         try {
             const response = await axios.post(`${baseURL}/api/workouts/`, workout,{
