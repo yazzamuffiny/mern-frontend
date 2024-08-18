@@ -18,6 +18,7 @@ const WorkoutDetails = ({workout}) => {
 
   //states
   const [isEditing, setIsEditing] = useState(false)
+  const [commentEditing, setCommentEditing] = useState(false)
 
   const [editTitle, setEditTitle] = useState(workout.title)
   const [editLoad, setEditLoad] = useState(workout.load)
@@ -93,29 +94,29 @@ const WorkoutDetails = ({workout}) => {
     setIsEditing(false);
   };
 
-    const handleAddComment = async () => {
-      try {
-        const response = await axios.post(
-          `${baseURL}/api/comments/workouts/${workout._id}/comments`,
-          {
-              text: commentText,
-              user_id: user.email,
-          }
-        );
-
-        if (response.status === 201) {
-          const newComment = response.data;
-          const updatedComments = [...workout.comments, newComment];
-          const updatedWorkout = { ...workout, comments: updatedComments};
-
-          dispatch({type: 'UPDATE_WORKOUT', payload: updatedWorkout})
-
-          setCommentText('')
+  const handleAddComment = async () => {
+    try {
+      const response = await axios.post(
+        `${baseURL}/api/comments/workouts/${workout._id}/comments`,
+        {
+            text: commentText,
+            user_id: user.email,
         }
-      }catch (error) {
-        console.error('Error Adding Comment', error)
+      );
+
+      if (response.status === 201) {
+        const newComment = response.data;
+        const updatedComments = [...workout.comments, newComment];
+        const updatedWorkout = { ...workout, comments: updatedComments};
+
+        dispatch({type: 'UPDATE_WORKOUT', payload: updatedWorkout})
+
+        setCommentText('')
       }
+    }catch (error) {
+      console.error('Error Adding Comment', error)
     }
+  }
 
 
   return (
@@ -155,6 +156,9 @@ const WorkoutDetails = ({workout}) => {
 			(
         <>
           <h4>{workout.title}</h4>
+          {workout.image && (
+              <img className="workout-image" src={`http://localhost:4000/public/uploads/${workout.image}`} alt="Workout" />
+          )}
           <p>
             <strong>Load (kg): </strong>
             {workout.load}
@@ -170,6 +174,9 @@ const WorkoutDetails = ({workout}) => {
             ago
           </p>
           <p><strong>Created by: </strong>{workout.user_id}</p>
+
+
+          
           <FaRegEdit className="edit" onClick={handleEdit}/>
           <MdDeleteForever className="delete" onClick={handleDelete}/>
 
@@ -187,12 +194,15 @@ const WorkoutDetails = ({workout}) => {
                   {/* map over comments array */}
                   {workout.comments.map((comment) => (
                     <div key={comment._id} className='comment'>
-                      <h5>{getEmailCharactersBeforeAtSymbol(comment.user_id)}</h5>
+                        
+                          <h5>{getEmailCharactersBeforeAtSymbol(comment.user_id)}</h5>
                       <p>{comment.text}</p>
                       <span>Posted: {formatDistanceToNow(new Date(comment.createdAt), {
                       includeSeconds: true,
                       })}{' '}
                       ago</span>
+                      
+                      
                     </div>
                   ))}
                 </div>
@@ -219,3 +229,13 @@ const WorkoutDetails = ({workout}) => {
 }
 
 export default WorkoutDetails
+
+
+{/* <h5>{getEmailCharactersBeforeAtSymbol(comment.user_id)}</h5>
+                      <p>{comment.text}</p>
+                      <span>Posted: {formatDistanceToNow(new Date(comment.createdAt), {
+                      includeSeconds: true,
+                      })}{' '}
+                      ago</span> */}
+                      {/* <FaRegEdit className="comment-edit" onClick={handleCommentEdit}/> */}
+                      {/* <MdDeleteForever className="comment-delete" onClick={handleCommentDelete}/> */}

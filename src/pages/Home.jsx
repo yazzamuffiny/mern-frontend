@@ -44,16 +44,12 @@ const Home = () => {
           const user_id = user.email
             if (workout.user_id === user_id) {
               return (
-                <>
                   <WorkoutDetails key={workout._id} workout={workout}/>
-                </>
               )
             }
           })) : (workouts && workouts.map((workout) => {
               return (
-                <>
                   <WorkoutDetails key={workout._id} workout={workout}/>
-                </>
               )
             })
           )

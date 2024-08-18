@@ -152,3 +152,15 @@ form.signup, form.login {
   background-color: #333;
   border-radius: 8px;
 }
+
+.comment {
+  padding: 10px;
+  border: 4px solid white;
+  border-radius: 10px;
+  margin: 10px;
+}
+
+.workout-image {
+  height: 200px;
+  width: auto;
+}
