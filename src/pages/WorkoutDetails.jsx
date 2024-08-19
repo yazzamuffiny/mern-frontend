@@ -168,12 +168,13 @@ const WorkoutDetails = ({workout}) => {
             {workout.reps}
           </p>
           <p>
+            Created&nbsp; 
             {formatDistanceToNow(new Date(workout.createdAt), {
               includeSeconds: true,
             })}{' '}
             ago
           </p>
-          <p><strong>Created by: </strong>{workout.user_id}</p>
+          <p><strong>Created by: </strong>{getEmailCharactersBeforeAtSymbol(workout.user_id)}</p>
 
 
           
@@ -230,12 +231,3 @@ const WorkoutDetails = ({workout}) => {
 
 export default WorkoutDetails
 
-
-{/* <h5>{getEmailCharactersBeforeAtSymbol(comment.user_id)}</h5>
-                      <p>{comment.text}</p>
-                      <span>Posted: {formatDistanceToNow(new Date(comment.createdAt), {
-                      includeSeconds: true,
-                      })}{' '}
-                      ago</span> */}
-                      {/* <FaRegEdit className="comment-edit" onClick={handleCommentEdit}/> */}
-                      {/* <MdDeleteForever className="comment-delete" onClick={handleCommentDelete}/> */}
