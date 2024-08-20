@@ -176,7 +176,7 @@ const WorkoutDetails = ({workout}) => {
           </p>
           <p><strong>Created by: </strong>{getEmailCharactersBeforeAtSymbol(workout.user_id)}</p>
 
-            {workout.user_id === user_.id && (
+            {workout.user_id === user._id && (
               <>
                 <FaRegEdit className="edit" onClick={handleEdit}/>
                 <MdDeleteForever className="delete" onClick={handleDelete}/>
