@@ -31,6 +31,7 @@ const WorkoutDetails = ({workout}) => {
   const navigate = useNavigate()
 
   const user = JSON.parse(localStorage.getItem('user'))
+  const user_id = user.email;
   
 //handle navigate
   const handleNavigate = () => {
@@ -176,7 +177,7 @@ const WorkoutDetails = ({workout}) => {
           </p>
           <p><strong>Created by: </strong>{getEmailCharactersBeforeAtSymbol(workout.user_id)}</p>
 
-            {workout.user_id === user && (
+            {workout.user_id === user_id && (
               <>
                 <FaRegEdit className="edit" onClick={handleEdit}/>
                 <MdDeleteForever className="delete" onClick={handleDelete}/>
